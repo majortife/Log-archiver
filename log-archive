@@ -1,0 +1,25 @@
+# to verify an argument is passed
+if [ -z "$1" ]
+then
+	echo " No argument entered"
+	exit 1
+fi
+
+# Verify the argument is a directory
+if [ ! -d "$1" ]; then
+	 echo "$(date): Error - '$1' is not a valid directory"
+   	 echo "$(date): Error - '$1' is not a valid directory" >> archive.log
+   	 exit 1
+fi
+
+# Archive and compress
+timestamp=$(date +%Y%m%d_%H%M%S)
+archive_name="logs_archive_${timestamp}.tar.gz"
+
+if tar -czf "$archive_name" "$1" &>/dev/null; then
+    echo "$(date): Success - $archive_name created ($1)" >> archive.log
+else
+    echo "$(date): Error - Compression failed for $1" >> archive.log
+    exit 1
+fi
+
